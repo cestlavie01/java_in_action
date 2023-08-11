@@ -1,4 +1,4 @@
-package com.cobus.chapter_2;
+package com.cobus.javainaction.chapter_2;
 
 import java.util.ArrayList;
 import java.util.Comparator;

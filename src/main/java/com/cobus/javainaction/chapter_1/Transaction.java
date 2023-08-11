@@ -1,4 +1,4 @@
-package com.cobus.chapter_1;
+package com.cobus.javainaction.chapter_1;
 
 public class Transaction {
 	private int price = 0;

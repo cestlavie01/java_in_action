@@ -1,4 +1,4 @@
-package com.cobus.chapter_1;
+package com.cobus.javainaction.chapter_1;
 
 import java.util.ArrayList;
 import java.util.List;
