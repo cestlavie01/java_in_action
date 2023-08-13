@@ -5,3 +5,5 @@
 /target/
 /bin/
 >>>>>>> refs/remotes/origin/main
+/.apt_generated/
+/.apt_generated_tests/

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.ToString;
+import lombok.Setter;
 
+@Setter
 @Getter
-@ToString
 public class Apple2 {
 	public enum Color {
 		GREEN,
@@ -75,6 +75,11 @@ public class Apple2 {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "Apple2 [color=" + color + ", weight=" + weight + "]";
 	}
 }
 

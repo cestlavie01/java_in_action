@@ -1,4 +1,4 @@
-package com.cobus.javainaction.chapter4;
+package com.cobus.javainaction.chapter_4;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
