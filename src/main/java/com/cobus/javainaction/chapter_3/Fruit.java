@@ -1,4 +1,4 @@
-package com.cobus.javainaction.chapter3;
+package com.cobus.javainaction.chapter_3;
 
 import java.util.HashMap;
 import java.util.Map;
