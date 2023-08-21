@@ -1,11 +1,14 @@
 package com.cobus.javainaction.chapter_5;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.cobus.javainaction.chapter_4.Dish;
@@ -31,6 +34,7 @@ public class Chapter5Main {
 		main.testSearchingAndMatching();
 		main.testReducing();
 		main.test56();
+		main.testNumericStream();
 	}
 
 	public void filterVegetarian() {
@@ -296,5 +300,45 @@ public class Chapter5Main {
 				.map(t -> t.getValue())
 				.reduce(Integer::min);
 		System.out.println(n2.get());
+	}
+
+	public void testNumericStream() {
+		int totalCalories = menu.stream().map(Dish::getCalories).reduce(0, Integer::sum);
+		int totalCalories2 = menu.stream().mapToInt(Dish::getCalories).sum();
+		System.out.println("" + totalCalories + "," + totalCalories2);
+
+		IntStream IntStream = menu.stream().mapToInt(Dish::getCalories);
+		Stream<Integer> stream = IntStream.boxed();
+
+		OptionalInt maxCalories = menu.stream().mapToInt(Dish::getCalories).max();
+		System.out.println(maxCalories); // OptionalInt[800]
+
+		List<Dish> emptyList = new ArrayList<>();
+		OptionalInt emtpyElimentMax = emptyList.stream().mapToInt(Dish::getCalories).max();
+		System.out.println(emtpyElimentMax); // OptionalInt.empty
+		int max = emtpyElimentMax.orElse(1);
+		System.out.println(max); // 1
+
+		IntStream evenNumbers = java.util.stream.IntStream.rangeClosed(1, 100).filter(n -> n % 2 == 0);
+		System.out.println(evenNumbers.count());
+
+		Stream<int[]> pythagoreanTriples = java.util.stream.IntStream.rangeClosed(1, 100).boxed()
+				.flatMap(a ->
+					java.util.stream.IntStream.rangeClosed(1, 100)
+					.filter(b -> Math.sqrt(a*a + b*b) % 1 == 0)
+					.mapToObj(b -> new int[]{a, b, (int) Math.sqrt(a*a + b*b)})
+				);
+
+		pythagoreanTriples.limit(5)
+				.forEach(t ->
+					System.out.println(String.format("%d, %d, %d,", t[0], t[1], t[2])));
+
+		Stream<int[]> pythagoreanTriples2 = java.util.stream.IntStream.rangeClosed(1, 100).boxed()
+				.flatMap(a ->
+					java.util.stream.IntStream.rangeClosed(1, 100)
+					.mapToObj(b ->
+						new int[]{a, b, (int) Math.sqrt(a*a + b*b)})
+					.filter(t -> t[2] % 1 == 0)
+				);
 	}
 }
