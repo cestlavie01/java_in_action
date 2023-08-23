@@ -3,11 +3,16 @@ package com.cobus.javainaction.chapter_5;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -35,6 +40,9 @@ public class Chapter5Main {
 		main.testReducing();
 		main.test56();
 		main.testNumericStream();
+		main.testOtherStreams();
+		main.testIterate();
+		main.testGenerate();
 	}
 
 	public void filterVegetarian() {
@@ -340,5 +348,94 @@ public class Chapter5Main {
 						new int[]{a, b, (int) Math.sqrt(a*a + b*b)})
 					.filter(t -> t[2] % 1 == 0)
 				);
+	}
+
+	public void testOtherStreams() {
+		Stream<String> stream = Stream.of("Modern", "Java", "In", "Action");
+		stream.map(String::toUpperCase).forEach(System.out::println);
+		
+		Stream<String> emptyStringStream = Stream.empty();
+		Stream<Integer> emptyIntStream = Stream.empty();
+
+		Stream<String> stream2 = Stream.of("Modern", "Java", "In", "Action");
+
+		// prepending
+		Stream<String> sstream1 = Stream.concat(Stream.of("cobus"), stream2);
+		// sstream1.map(String::toUpperCase).forEach(System.out::println); // "COBUS"
+
+		// Appending
+		Stream<String> sstream2 = Stream.concat(sstream1, Stream.of("blog"));
+		sstream2.map(String::toUpperCase).forEach(System.out::println); // "COBUS" "BLOG"
+
+		String homeValue = System.getProperty("home");
+		Stream<String> homevaluStream = homeValue == null ? Stream.empty() : Stream.of(homeValue);
+		Stream<String> homevaluStream2 = Stream.ofNullable(System.getProperty("home"));
+
+		System.out.println(homevaluStream.count()); // 0
+		System.out.println(homevaluStream2.count()); // 0
+
+		int[] numbers = { 2, 3, 5, 7, 9, 11, 13 };
+		int sum = Arrays.stream(numbers).sum();
+		System.out.println(sum);
+
+		long uniqueWords = 0;
+		try (Stream<String> lines = Files.lines(Paths.get("data.txt"), Charset.defaultCharset())) {
+			uniqueWords = lines.flatMap(line -> Arrays.stream(line.split(" ")))
+					.distinct()
+					.count();
+		} catch (IOException e) {
+			// Do something for exception.
+		}
+	}
+
+	public void testIterate() {
+		Stream.iterate(0, n -> n + 2)
+				.limit(10)
+				.forEach(System.out::println);
+
+		Stream.iterate(new int[]{0, 1}, n -> new int[]{n[1], n[0] + n[1]})
+				.limit(20)
+				.forEach(n -> System.out.println("(" + n[0] + "," + n[1] + ")"));
+
+		Stream.iterate(new int[]{0, 1}, n -> new int[]{n[1], n[0] + n[1]})
+				.limit(20)
+				.map(n -> n[0])
+				.forEach(System.out::println);
+
+		Stream.iterate(new int[] { 0, 1 }, n -> n[0] < 100, n -> new int[] { n[1], n[0] + n[1] })
+				.limit(20)
+				.map(n -> n[0])
+				.forEach(System.out::println);
+
+		Stream.iterate(new int[] { 0, 1 }, n -> new int[] { n[1], n[0] + n[1] })
+				.takeWhile(n -> n[0] < 100)
+				.limit(20)
+				.map(n -> n[0])
+				.forEach(System.out::println);
+	}
+	
+	public void testGenerate() {
+		Stream.generate(Math::random)
+				.limit(5)
+				.forEach(System.out::println);
+		
+		IntStream twos = IntStream.generate(new IntSupplier() {
+			public int getAsInt() {
+				return 2;
+			}
+		});
+
+		IntSupplier fib = new IntSupplier() {
+			private int previous = 0;
+			private int current = 1;
+			public int getAsInt() {
+				int oldPrevious = previous;
+				int nextValue = previous + current;
+				previous = current;
+				current = nextValue;
+				return oldPrevious;
+			}
+		};
+		IntStream.generate(fib).limit(10).forEach(System.out::println);
 	}
 }

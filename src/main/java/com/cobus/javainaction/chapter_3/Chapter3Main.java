@@ -32,9 +32,9 @@ public class Chapter3Main {
 		int portNumber = 1337;
 		Runnable r = () -> {
 			System.out.println(portNumber);
-//			portNumber = 13337;	// 컴파일 오류
+//			portNumber = 13337;	// compile error
 		};
-//		portNumber = 13337; // 컴파일 오류
+//		portNumber = 13337; // compile error
 		r.run();
 		
 		
