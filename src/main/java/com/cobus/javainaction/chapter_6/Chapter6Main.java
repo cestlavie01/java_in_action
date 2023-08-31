@@ -84,5 +84,9 @@ public class Chapter6Main {
         Optional<Dish> mostCalorieDish2 = menu.stream().collect(Collectors.reducing(
                 (d1, d2) -> d1.getCalories() > d2.getCalories() ? d1 : d2));
         System.out.println(mostCalorieDish2);
+
+        int totalCalories3 = menu.stream().collect(
+                Collectors.reducing(0, Dish::getCalories, Integer::sum));
+        System.out.println(totalCalories3);
     }
 }
